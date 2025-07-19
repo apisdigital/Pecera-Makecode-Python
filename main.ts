@@ -121,113 +121,169 @@ scene.setBackgroundImage(img`
     6cccccccccccccc66666ccccccccccccccccccc6666cccc6644bccccccccccccc8666666666666f66666ffffffff666666666666666666ccccccccccccccccccccccccccccccccccccccccccccccccc8
     6cccccccccccccc66666ccccccccccccccccccc666ccccc6666ccccccccccccccf666666666666ff6666ffffffff6666666666666666666ccccccccccccccc6cccccccccccccccccccccccccccccccc8
     `)
-let v_comer = 60
-// PECES******************************************************************************************
+let v_comer = 80
+// PEZ******************************************************************************************
 class pez {
     pez: Sprite
+    hacia: number
     apetito: number
     vx: number
     vy: number
+    hora_comer: number
     constructor() {
-        this.pez = sprites.create(img`
+        let im: Image;
+        // crea los disfraces
+        let disfraz = randint(0, 3)
+        if (disfraz == 0) {
+            im = img`
             . . . . . . . . . . . . . . . .
-            . . . . . . . . c c c c . . . .
-            . . . . . . c c d d d d c . . .
-            . . . . . c c c c c c d c . . .
-            . . . . c c 4 4 4 4 d c c . . .
-            . . . c 4 d 4 4 4 4 4 1 c . c c
-            . . c 4 4 4 1 4 4 4 4 d 1 c 4 c
-            . c 4 4 4 4 1 4 4 4 4 4 1 c 4 c
-            f 4 4 4 4 4 1 4 4 4 4 4 1 4 4 f
-            f 4 4 4 f 4 1 c c 4 4 4 1 f 4 f
-            f 4 4 4 4 4 1 4 4 f 4 4 d f 4 f
-            . f 4 4 4 4 1 c 4 f 4 d f f f f
-            . . f f 4 d 4 4 f f 4 c f c . .
-            . . . . f f 4 4 4 4 c d b c . .
-            . . . . . . f f f f d d d c . .
-            . . . . . . . . . . c c c . . .
-        `, SpriteKind.Player)
-        this.pez.x = randint(0, screen.width)
-        this.pez.y = randint(0, screen.height)
-        this.pez.vx = randint(-30, 30)
-        this.pez.vy = randint(-30, 30)
-        this.pez.setBounceOnWall(true)
-        this.apetito = 1
-    }
-    
-    public mirar(l: string) {
-        if (l == "i") {
-            this.pez.setImage(img`
-                . . . . . . . . . . . . . . . .
-                . . . . . . . . c c c c . . . .
-                . . . . . . c c d d d d c . . .
-                . . . . . c c c c c c d c . . .
-                . . . . c c 4 4 4 4 d c c . . .
-                . . . c 4 d 4 4 4 4 4 1 c . c c
-                . . c 4 4 4 1 4 4 4 4 d 1 c 4 c
-                . c 4 4 4 4 1 4 4 4 4 4 1 c 4 c
-                f 4 4 4 4 4 1 4 4 4 4 4 1 4 4 f
-                f 4 4 4 f 4 1 c c 4 4 4 1 f 4 f
-                f 4 4 4 4 4 1 4 4 f 4 4 d f 4 f
-                . f 4 4 4 4 1 c 4 f 4 d f f f f
-                . . f f 4 d 4 4 f f 4 c f c . .
-                . . . . f f 4 4 4 4 c d b c . .
-                . . . . . . f f f f d d d c . .
-                . . . . . . . . . . c c c . . .
-            `)
-        } else {
-            this.pez.setImage(img`
+            . . . . c c c c . . . . . . . .
+            . . . c d d d d c c . . . . . .
+            . . . c d c c c c c c . . . . .
+            . . . c c d 4 4 4 4 c c . . . .
+            c c . c 1 4 4 4 4 4 d 4 c . . .
+            c 4 c 1 d 4 4 4 4 1 4 4 4 c . .
+            c 4 c 1 4 4 4 4 4 1 4 4 4 4 c .
+            f 4 4 1 4 4 4 4 4 1 4 4 4 4 4 f
+            f 4 f 1 4 4 4 c c 1 4 f 4 4 4 f
+            f 4 f d 4 4 f 4 4 1 4 4 4 4 4 f
+            f f f f d 4 f 4 c 1 4 4 4 4 f .
+            . . c f c 4 f f 4 4 d 4 f f . .
+            . . c b d c 4 4 4 4 f f . . . .
+            . . c d d d f f f f . . . . . .
+            . . . c c c . . . . . . . . . .
+            `
+        } else if (disfraz == 1) {
+            im = img`
                 . . . . . . . . . . . . . . . .
                 . . . . c c c c . . . . . . . .
                 . . . c d d d d c c . . . . . .
                 . . . c d c c c c c c . . . . .
-                . . . c c d 4 4 4 4 c c . . . .
-                c c . c 1 4 4 4 4 4 d 4 c . . .
-                c 4 c 1 d 4 4 4 4 1 4 4 4 c . .
-                c 4 c 1 4 4 4 4 4 1 4 4 4 4 c .
-                f 4 4 1 4 4 4 4 4 1 4 4 4 4 4 f
-                f 4 f 1 4 4 4 c c 1 4 f 4 4 4 f
-                f 4 f d 4 4 f 4 4 1 4 4 4 4 4 f
-                f f f f d 4 f 4 c 1 4 4 4 4 f .
-                . . c f c 4 f f 4 4 d 4 f f . .
-                . . c b d c 4 4 4 4 f f . . . .
+                . . . c c d 5 5 5 5 c c . . . .
+                c c . c 1 5 5 5 5 5 d 5 c . . .
+                c 5 c 1 d 5 5 5 5 1 5 5 5 c . .
+                c 5 c 1 5 5 5 5 5 1 5 5 5 5 c .
+                f 5 5 1 5 5 5 5 5 1 5 5 5 5 5 f
+                f 5 f 1 5 5 5 c c 1 5 f 5 5 5 f
+                f 5 f d 5 5 f 5 5 1 5 5 5 5 5 f
+                f f f f d 5 f 5 c 1 5 5 5 5 f .
+                . . c f c 5 f f 5 5 d 5 f f . .
+                . . c b d c 5 5 5 5 f f . . . .
                 . . c d d d f f f f . . . . . .
                 . . . c c c . . . . . . . . . .
-            `)
+            `
+        } else if (disfraz == 2) {
+            im = img`
+                . . . . . . . . . . . . . . . .
+                . . . c c c c c . . . . . . . .
+                . . c 5 5 5 5 5 c c . . . . . .
+                . c 5 5 5 5 5 5 5 5 c . . . . .
+                . c 5 5 5 b b b b b b c . . . .
+                . . c c b b 1 b b 1 1 c . . . .
+                . . . c 1 1 1 b b 1 1 1 c . . .
+                c c . c 1 1 1 b 1 1 1 1 c . . .
+                c 5 b b 1 1 1 b 1 1 1 d c . . .
+                c 5 5 5 1 b 1 b 1 c 1 d c c . .
+                c 5 b b 1 b 1 1 1 1 1 d d c c .
+                c c . f 1 b b 1 1 1 1 1 d d d f
+                . . . f b b b 1 1 1 1 1 1 f f f
+                . . f 5 5 b b b 1 1 1 f f . . .
+                . . f 5 5 5 5 5 f f f . . . . .
+                . . f f f f f f . . . . . . . .
+            `
+        } else {
+            im = img`
+                . . . . . . . . . . . . . . . .
+                . . . . c c c c . . . . . . . .
+                . . . c d d d d c c . . . . . .
+                . . . c d c c c c c c . . . . .
+                . . . c c d 7 7 7 7 c c . . . .
+                c c . c 1 7 7 7 7 7 d 7 c . . .
+                c 7 c 1 d 7 7 7 7 1 7 7 7 c . .
+                c 7 c 1 7 7 7 7 7 1 7 7 7 7 c .
+                f 7 7 1 7 7 7 7 7 1 7 7 7 7 7 f
+                f 7 f 1 7 7 7 c c 1 7 f 7 7 7 f
+                f 7 f d 7 7 f 7 7 1 7 7 7 7 7 f
+                f f f f d 7 f 7 c 1 7 7 7 7 f .
+                . . c f c 7 f f 7 7 d 7 f f . .
+                . . c b d c 7 7 7 7 f f . . . .
+                . . c d d d f f f f . . . . . .
+                . . . c c c . . . . . . . . . .
+            `
         }
         
+        this.pez = sprites.create(im, SpriteKind.Player)
+        // crea el sprite eligiendo un disfraz
+        this.pez.setPosition(randint(0, screen.width), randint(0, screen.height))
+        // posicion inicial aleatoria
+        this.pez.setVelocity(randint(-30, 30), randint(-30, 30))
+        // velocidad aleatoria
+        if (this.pez.vx < 0) {
+            // pone al pez mirando hacia el lado correcto
+            this.pez.image.flipX()
+        }
+        
+        this.hacia = this.pez.vx
+        // Velociadd actual
+        this.pez.setBounceOnWall(true)
+        // rebote en paredes
+        this.apetito = 1
+    }
+    
+    // empieza con apetito
+    public flip() {
+        // cambia la orientación del pez si cambia de dirección
+        this.pez.image.flipX()
     }
     
     public cambiar_direccion() {
+        // varia su dirección aleatoriamente
         if (randint(1, 10) == 1) {
-            this.pez.vx = randint(-30, 30)
-            this.pez.vy = randint(-30, 30)
+            this.pez.setVelocity(randint(-30, 30), randint(-30, 30))
         }
         
     }
     
     public direccion(): number {
+        // devuelve su velocidad x para saber si va a izquierda o derecha
         return this.pez.vx
     }
     
     public posicion(): number[] {
+        // devuelve una tupla con sus coordenadas
         return [this.pez.x, this.pez.y]
     }
     
     public ir_a(vx: number, vy: number) {
         this.vx = vx
         this.vy = vy
-        this.pez.vx = this.vx
-        this.pez.vy = this.vy
+        this.pez.setVelocity(this.vx, this.vy)
     }
     
     public hambre(): number {
         return this.apetito
     }
     
+    // Cambia de tamaño si come. Y queda sin apetito, además anota la hora que come
     public come() {
         this.apetito = 0
-        this.pez.changeScale(0.4, ScaleAnchor.Middle)
+        this.pez.changeScale(0.02, ScaleAnchor.Middle)
+        this.hora_comer = game.runtime()
+    }
+    
+    public quiero_comer() {
+        if (game.runtime() - this.hora_comer > 10000) {
+            this.apetito = 1
+        }
+        
+    }
+    
+    public tengo_hambre() {
+        this.pez.say(this.apetito)
+    }
+    
+    public decir() {
+        this.pez.sayText(lista_comida)
     }
     
 }
@@ -254,10 +310,9 @@ class comida {
           . . . . . . . . . . . 7 7 . . .
           . . . . . . . . . . . . . . . .
         `, SpriteKind.Food)
-        this.food.x = randint(5, 155)
+        this.food.x = randint(10, 150)
         this.food.y = 0
         this.food.vy = 20
-        this.food.setFlag(SpriteFlag.AutoDestroy, true)
     }
     
     public posicion(): number[] {
@@ -266,27 +321,26 @@ class comida {
     
     public destruir() {
         this.food.destroy()
+        
+        lista_comida = []
+        
+        comer = 0
     }
     
 }
 
 let lista_peces : pez[] = []
 let lista_comida : comida[] = []
-for (let i = 0; i < 4; i++) {
+for (let i = 0; i < 5; i++) {
     lista_peces.push(new pez())
 }
 controller.A.onEvent(ControllerButtonEvent.Pressed, function on_event_pressed() {
     
     if (comer == 0) {
         lista_comida.push(new comida())
+        comer = 1
     }
     
-    comer = 1
-})
-sprites.onDestroyed(SpriteKind.Food, function on_destroyed(sprite: Sprite) {
-    
-    comer = 0
-    let lista_comida = []
 })
 // Ciclo principal
 game.onUpdate(function on_update() {
@@ -295,31 +349,41 @@ game.onUpdate(function on_update() {
     let vn: number;
     let rv: number;
     for (let elemento of lista_peces) {
-        if (elemento.direccion() < 0) {
-            elemento.mirar("i")
-        } else {
-            elemento.mirar("d")
-        }
-        
+        // elemento.decir() EL pez pòne un texto para cointorlar variables   
         if (comer == 0 || elemento.hambre() == 0) {
             if (randint(1, 20) == 1) {
                 elemento.cambiar_direccion()
             }
             
         } else {
-            for (let c of lista_comida) {
-                dx = c.posicion()[0] - elemento.posicion()[0]
-                dy = c.posicion()[1] - elemento.posicion()[1]
-                vn = Math.sqrt(dx ** 2 + dy ** 2)
-                rv = v_comer / vn
-                elemento.ir_a(dx * rv, dy * rv)
-                if (Math.abs(dx) < 1 && Math.abs(dy) < 1) {
-                    c.destruir()
-                    elemento.come()
-                }
-                
+            // calcula la posición de la comida y se dirige hacia ella a una velocidad constante 
+            dx = lista_comida[0].posicion()[0] - elemento.posicion()[0]
+            dy = lista_comida[0].posicion()[1] - elemento.posicion()[1]
+            vn = Math.sqrt(dx ** 2 + dy ** 2)
+            rv = v_comer / vn
+            elemento.ir_a(dx * rv, dy * rv)
+            // si coincide con la comida la come
+            if (Math.abs(dx) < 3 && Math.abs(dy) < 3) {
+                elemento.come()
+                lista_comida[0].destruir()
             }
+            
         }
         
+        if (comer == 1) {
+            // Si la comida cae y sale de pantalla sin que la coman, desaparece
+            if (lista_comida[0].posicion()[1] > 125) {
+                lista_comida[0].destruir()
+            }
+            
+        }
+        
+        // controla el cambio de dirección para poner la imagen correcta
+        if (elemento.direccion() / elemento.hacia < 0) {
+            elemento.flip()
+            elemento.hacia = elemento.direccion()
+        }
+        
+        elemento.quiero_comer()
     }
 })
